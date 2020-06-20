@@ -10,8 +10,10 @@ type BlockChain struct {
 }
 
 type Person struct {
-	name   string
-	values []float64
+	name      string
+	values    []float64
+	category  int
+	algorithm string
 }
 
 type Block struct {
@@ -20,8 +22,8 @@ type Block struct {
 	PrevHash []byte
 }
 
-func AddPerson(name string, value []float64) Person {
-	return Person{name, value}
+func AddPerson(name string, value []float64, category int, algorithm string) Person {
+	return Person{name, value, category, algorithm}
 }
 
 func (b *Block) ReturnBlockValues() []float64 {
@@ -50,12 +52,12 @@ func (chain *BlockChain) AddBlock(data Person) {
 	chain.blocks = append(chain.blocks, new)
 }
 
-func (chain *BlockChain) ReturnBlocks() []*Block  {
+func (chain *BlockChain) ReturnBlocks() []*Block {
 	return chain.blocks
 }
 
 func Genesis() *Block {
-	return CreateBlock(Person{"Genesis", make([]float64, 0)}, []byte{})
+	return CreateBlock(Person{"Genesis", make([]float64, 0), -1, ""}, []byte{})
 }
 
 func InitBlockChain() *BlockChain {

@@ -1,15 +1,29 @@
 package main
 
 import (
+	"Tutorial/api"
 	"Tutorial/blockchain"
 	"fmt"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
 )
 
 func main() {
 
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", api.IndexRouter)
+	router.HandleFunc("/people", api.GetPeople).Methods("GET")
+	router.HandleFunc("/people", api.CreatePeople).Methods("POST")
+	log.Fatal(http.ListenAndServe(":8000", router))
+
 	chain := blockchain.InitBlockChain()
-	Person := blockchain.AddPerson("Andres Loa Puris", []float64{0.0034, 0.0012, 0.0123, 0.0071, 0.0016})
-	chain.AddBlock(Person)
+
+	for _ , v := range api.Example() {
+		Person := blockchain.AddPerson(v.Name, v.Values, v.Category, v.Algorithm)
+		chain.AddBlock(Person)
+	}
+
 
 	for _, block := range chain.ReturnBlocks() {
 		fmt.Printf("Previous Hash: %x\n", block.PrevHash)
