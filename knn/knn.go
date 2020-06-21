@@ -14,6 +14,7 @@ import (
 	"sort"
 	"strconv"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -131,6 +132,8 @@ func getNeighbors(trainingSet []Person, testInstance Person, k int) []Person {
 }
 
 func receivePerson(w http.ResponseWriter, r *http.Request) {
+	/*w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Request-Method", "POST")*/
 	var testInstance Person
 	var testInstances []Person
 	var predictions []string
@@ -143,7 +146,8 @@ func receivePerson(w http.ResponseWriter, r *http.Request) {
 	//json.NewEncoder(w).Encode(testInstance)
 	testInstances = append(testInstances, testInstance)
 	predictions = calculateKNN(persons, testInstances, k)
-	//w.Header().Set("Content-Type", "application/json")
+
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(predictions)
 }
 
@@ -196,11 +200,12 @@ func main() {
 		})
 	}
 	router := mux.NewRouter().StrictSlash(true)
-
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	origins := handlers.AllowedOrigins([]string{"*"})
 	router.HandleFunc("/", indexRoute)
 	router.HandleFunc("/knn", receivePerson).Methods("POST")
-	router.Use(mux.CORSMethodMiddleware(router))
-	log.Fatal(http.ListenAndServe(":3000", router))
+	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 	/*personsJSON, _ := json.Marshal(persons)
 	fmt.Println(string(personsJSON))*/
 
