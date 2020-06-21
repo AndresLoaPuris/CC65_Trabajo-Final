@@ -198,7 +198,8 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", indexRoute)
-	router.HandleFunc("/person", receivePerson).Methods("POST")
+	router.HandleFunc("/knn", receivePerson).Methods("POST")
+	router.Use(mux.CORSMethodMiddleware(router))
 	log.Fatal(http.ListenAndServe(":3000", router))
 	/*personsJSON, _ := json.Marshal(persons)
 	fmt.Println(string(personsJSON))*/
