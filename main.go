@@ -4,9 +4,10 @@ import (
 	"Tutorial/api"
 	"Tutorial/blockchain"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
@@ -19,11 +20,10 @@ func main() {
 
 	chain := blockchain.InitBlockChain()
 
-	for _ , v := range api.Example() {
+	for _, v := range api.Example() {
 		Person := blockchain.AddPerson(v.Name, v.Values, v.Category, v.Algorithm)
 		chain.AddBlock(Person)
 	}
-
 
 	for _, block := range chain.ReturnBlocks() {
 		fmt.Printf("Previous Hash: %x\n", block.PrevHash)

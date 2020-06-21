@@ -23,6 +23,7 @@ func indexRoute(w http.ResponseWriter, r *http.Request) {
 
 //Person Represents Struct of the Entity
 type Person struct {
+	Name           string  `json:"name"`
 	Department     float64 `json:"department"`
 	LifeStage      float64 `json:"lifestage"`
 	Gender         float64 `json:"gender"`
@@ -161,7 +162,7 @@ func calculateKNN(persons []Person, testInstances []Person, k int) []string {
 var persons []Person
 
 func main() {
-	csvFile, err := os.Open("")
+	csvFile, err := os.Open("persons.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -177,13 +178,15 @@ func main() {
 		} else if error != nil {
 			log.Fatal(error)
 		}
-		department, _ := strconv.ParseFloat(line[0], 8)
-		lifestage, _ := strconv.ParseFloat(line[1], 8)
-		gender, _ := strconv.ParseFloat(line[2], 8)
-		comorbidity, _ := strconv.ParseFloat(line[3], 8)
-		symptomatology, _ := strconv.ParseFloat(line[4], 8)
-		ispositive := line[5]
+		name := line[0]
+		department, _ := strconv.ParseFloat(line[1], 8)
+		lifestage, _ := strconv.ParseFloat(line[2], 8)
+		gender, _ := strconv.ParseFloat(line[3], 8)
+		comorbidity, _ := strconv.ParseFloat(line[4], 8)
+		symptomatology, _ := strconv.ParseFloat(line[5], 8)
+		ispositive := line[6]
 		persons = append(persons, Person{
+			Name:           name,
 			Department:     department,
 			LifeStage:      lifestage,
 			Gender:         gender,
@@ -197,5 +200,7 @@ func main() {
 	router.HandleFunc("/", indexRoute)
 	router.HandleFunc("/person", receivePerson).Methods("POST")
 	log.Fatal(http.ListenAndServe(":3000", router))
+	personsJSON, _ := json.Marshal(persons)
+	fmt.Println(string(personsJSON))
 
 }
