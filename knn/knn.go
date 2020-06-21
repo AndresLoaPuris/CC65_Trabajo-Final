@@ -183,11 +183,11 @@ func main() {
 			log.Fatal(error)
 		}
 		name := line[0]
-		department, _ := strconv.ParseFloat(line[1], 64)
-		lifestage, _ := strconv.ParseFloat(line[2], 64)
-		gender, _ := strconv.ParseFloat(line[3], 64)
-		comorbidity, _ := strconv.ParseFloat(line[4], 64)
-		symptomatology, _ := strconv.ParseFloat(line[5], 64)
+		department, _ := strconv.ParseFloat(line[1], 8)
+		lifestage, _ := strconv.ParseFloat(line[2], 8)
+		gender, _ := strconv.ParseFloat(line[3], 8)
+		comorbidity, _ := strconv.ParseFloat(line[4], 8)
+		symptomatology, _ := strconv.ParseFloat(line[5], 8)
 		ispositive := line[6]
 		persons = append(persons, Person{
 			Name:           name,

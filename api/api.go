@@ -34,17 +34,17 @@ func IndexRouter(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Welcome to API")
 }
 
-func GetPeople(w http.ResponseWriter, r *http.Request){
+func GetPeople(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(people)
 }
 
-func CreatePeople(w http.ResponseWriter, r *http.Request){
+func CreatePeople(w http.ResponseWriter, r *http.Request) {
 	var newPeople APIPerson
-	reqBody , error := ioutil.ReadAll(r.Body)
+	reqBody, error := ioutil.ReadAll(r.Body)
 
 	if error != nil {
-		fmt.Fprint(w,"Insert a Valid Person")
+		fmt.Fprint(w, "Insert a Valid Person")
 	}
 	json.Unmarshal(reqBody, &newPeople)
 	people = append(people, newPeople)
