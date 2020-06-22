@@ -26,22 +26,24 @@ export default class CSVReader1 extends Component {
 
    handleOnFileLoad = (data) => {
 
-    for (var i = 0; i < data.length; i++) {
+    var sendjson=[];
+
+
+  for (var i = 0; i < data.length; i++) { 
+    sendjson.push({
+      Name:      data[i].data[0],
+      Values:    [parseFloat(data[i].data[1]), parseFloat(data[i].data[2]), parseFloat(data[i].data[3]), parseFloat(data[i].data[4]), parseFloat(data[i].data[5])],
+      Category:  parseFloat(this.state.value),
+      Algorithm: 'kmeans'
+    });
+  }
+
 
       fetch("http://localhost:8000/people", {
         method: 'post',
         mode:'no-cors',
-        body: JSON.stringify({
-          Name:      data[i].data[0],
-          Values:    [parseFloat(data[i].data[1]), parseFloat(data[i].data[2]), parseFloat(data[i].data[3]), parseFloat(data[i].data[4]), parseFloat(data[i].data[5])],
-          Category:  parseFloat(this.state.value),
-          //Category: Math.floor((Math.random() * parseFloat(this.state.value)) + 1),
-          Algorithm: 'kmeans'
-        })
-      
+        body: JSON.stringify(sendjson)
       });
-
-    }
 
   }
 

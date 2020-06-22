@@ -99,6 +99,8 @@ class App extends Component {
 
   {this.state.contacts.sort(function (a, b) { return (a.Category - b.Category) })}
 
+    {console.log(this.state.contacts)}
+
     return (
 
       <div className="card shadow mb-4">

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"Tutorial/blockchain"
+	"Tutorial/kmeans"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -16,38 +18,85 @@ type APIPerson struct {
 
 type allPerson []APIPerson
 
-var people = allPerson{
+var returnpeople = allPerson{}
 
-	{
-		Name:      "Jose Carlos Paredes",
-		Values:    []float64{0.0034, 0.0012, 0.0123, 0.0071, 0.0016},
-		Category:  1,
-		Algorithm: "knn",
-	},
-}
+var algorithmUse = ""
+var team = 0
 
-func Example() []APIPerson {
-	return people
-}
+var chain = blockchain.InitBlockChain()
 
 func IndexRouter(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Welcome to API")
 }
 
 func GetPeople(w http.ResponseWriter, r *http.Request) {
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(people)
+	json.NewEncoder(w).Encode(returnpeople)
+
+	/*for _, block := range chain.ReturnBlocks() {
+		fmt.Printf("Previous Hash: %x\n", block.PrevHash)
+		fmt.Printf("Name in Block: %s\n", block.ReturnBlockName())
+		fmt.Println("Data in Block:", block.ReturnBlockValues())
+		fmt.Printf("Hash: %x\n\n", block.Hash)
+	}*/
 }
 
 func CreatePeople(w http.ResponseWriter, r *http.Request) {
-	var newPeople APIPerson
+
 	reqBody, error := ioutil.ReadAll(r.Body)
 
 	if error != nil {
 		fmt.Fprint(w, "Insert a Valid Person")
 	}
-	json.Unmarshal(reqBody, &newPeople)
-	people = append(people, newPeople)
+
+	var people = allPerson{}
+
+	json.Unmarshal(reqBody, &people)
+
+	/*people.Category = 0
+	algorithmUse = people.Algorithm
+	team = people.Category
+
+	if success, centroids := kmeans.Train(observations, team, 10); success {
+		for i, observation := range observations {
+
+			index := kmeans.Nearest(observation, centroids)
+			people[i].Category = index + 1
+			Person := blockchain.AddPerson(people[i].Name, observation, index+1, algorithmUse)
+			chain.AddBlock(Person)
+		}
+	}
+
+	people = append(people, people)
+	observations = append(observations, kmeans.Node{people.Values[0], people.Values[1], people.Values[2], people.Values[3], people.Values[4]})
+	*/
+	team = people[0].Category
+	var observations = []kmeans.Node{}
+
+	for i := 0; i < len(people); i++ {
+		observations = append(observations, kmeans.Node{people[i].Values[0], people[i].Values[1], people[i].Values[2], people[i].Values[3], people[i].Values[4]})
+	}
+
+	if success, centroids := kmeans.Train(observations, team, 100); success {
+		for i, observation := range observations {
+			index := kmeans.Nearest(observation, centroids)
+			people[i].Category = index + 1
+			Person := blockchain.AddPerson(people[i].Name, observation, index+1, algorithmUse)
+			chain.AddBlock(Person)
+		}
+	}
+
+	returnpeople = people
+
+	for _, block := range chain.ReturnBlocks() {
+		fmt.Printf("Previous Hash: %x\n", block.PrevHash)
+		fmt.Printf("Name in Block: %s\n", block.ReturnBlockName())
+		fmt.Println("Data in Block:", block.ReturnBlockValues())
+		fmt.Printf("Hash: %x\n\n", block.Hash)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newPeople)
+	json.NewEncoder(w).Encode(returnpeople)
+
 }
