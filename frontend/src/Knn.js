@@ -60,7 +60,7 @@ class PostForm extends Component {
 	render() {
         const departments = [
             {
-                value: 0.0620,
+                value: 0.0650,
                 name: "Ica"
             },
             {
@@ -88,6 +88,10 @@ class PostForm extends Component {
                 name: "La Libertad"
             },
             {
+                value:0.029,
+                name:"Callao"
+            },
+            {
                 value: 0.0270,
                 name: "Amazonas"
             },
@@ -102,6 +106,10 @@ class PostForm extends Component {
             {
                 value: 0.0200,
                 name: "Ucayali"
+            },
+            {
+                value: 0.0190,
+                name:"Pasco"
             },
             {
                 value: 0.0180,
@@ -124,19 +132,15 @@ class PostForm extends Component {
                 name: "Puno"
             },
             {
-                value: 0.140,
-                name: "Huanuco"
-            },
-            {
-                value: 0.170,
+                value: 0.0140,
                 name: "Junin"
             },
             {
-                value: 0.120,
+                value: 0.0120,
                 name: "Cajamarca"
             },
             {
-                value: 0.110,
+                value: 0.0110,
                 name: "Ayacucho"
             },
             {
@@ -227,19 +231,19 @@ class PostForm extends Component {
         ];
         const symptomatologies = [
             {
-                value: 0.3010,
+                value: 0.1806,
                 name: "Tos"
             },
             {
-                value: 0.2768,
+                value: 0.1458,
                 name: "Fiebre"
             },
             {
-                value: 0.1488,
+                value: 0.1431,
                 name: "Malestar General"
             },
             {
-                value: 0.1476,
+                value: 0.1426,
                 name: "Dolor de Garganta"
             },
             {
@@ -255,7 +259,7 @@ class PostForm extends Component {
                 name: "Dificultad Respiratoria"
             },
             {
-                value: 0.0747,
+                value: 0.0541,
                 name: "Dolor Muscular"
             },
             {
@@ -267,11 +271,15 @@ class PostForm extends Component {
                 name:"Nauseas"
             },
             {
+                value:0.0210,
+                name:"Dolor de Pecho"
+            },
+            {
                 value: 0.0129,
                 name:"Dolor de Articulaciones"
             },
             {
-                value: 0.0201,
+                value: 0.0099,
                 name:"Dolor Abdominal"
             },
             {
