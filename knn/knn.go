@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Tutorial/blockchain"
 	"bufio"
 	"encoding/csv"
 	"encoding/json"
@@ -132,8 +133,8 @@ func getNeighbors(trainingSet []Person, testInstance Person, k int) []Person {
 }
 
 func receivePerson(w http.ResponseWriter, r *http.Request) {
-	/*w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Request-Method", "POST")*/
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Request-Method", "POST")
 	var testInstance Person
 	var testInstances []Person
 	var predictions []string
@@ -143,12 +144,20 @@ func receivePerson(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(reqBody, &testInstance)
 	k := 4
-	//json.NewEncoder(w).Encode(testInstance)
+	json.NewEncoder(w).Encode(testInstance)
 	testInstances = append(testInstances, testInstance)
 	predictions = calculateKNN(persons, testInstances, k)
-
+	testInstance.IsPositive = predictions[0]
+	Perso := blockchain.AddPerson(testInstance.Name, testInstance.Department, testInstance.LifeStage, testInstance.Gender, testInstance.Comorbidity, testInstance.Symptomatology, testInstance.IsPositive)
+	chain.AddBlock(Perso)
+	addedPersons = append(addedPersons, testInstance)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(predictions)
+}
+
+func getPeople(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(addedPersons)
 }
 
 func calculateKNN(persons []Person, testInstances []Person, k int) []string {
@@ -164,6 +173,8 @@ func calculateKNN(persons []Person, testInstances []Person, k int) []string {
 
 //GlobalVariables
 var persons []Person
+var addedPersons []Person
+var chain = blockchain.InitBlockChain()
 
 func main() {
 	csvFile, err := os.Open("persons.csv")
@@ -205,6 +216,7 @@ func main() {
 	origins := handlers.AllowedOrigins([]string{"*"})
 	router.HandleFunc("/", indexRoute)
 	router.HandleFunc("/knn", receivePerson).Methods("POST")
+	router.HandleFunc("/persons", getPeople).Methods("GET")
 	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
 	/*personsJSON, _ := json.Marshal(persons)
 	fmt.Println(string(personsJSON))*/
