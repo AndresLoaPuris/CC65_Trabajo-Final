@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Tutorial/blockchain"
+	blockchainknn "Tutorial/blockchain"
 	"bufio"
 	"encoding/csv"
 	"encoding/json"
@@ -144,12 +144,12 @@ func receivePerson(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(reqBody, &testInstance)
 	k := 4
-	json.NewEncoder(w).Encode(testInstance)
+	//json.NewEncoder(w).Encode(testInstance)
 	testInstances = append(testInstances, testInstance)
 	predictions = calculateKNN(persons, testInstances, k)
 	testInstance.IsPositive = predictions[0]
-	Perso := blockchain.AddPerson(testInstance.Name, testInstance.Department, testInstance.LifeStage, testInstance.Gender, testInstance.Comorbidity, testInstance.Symptomatology, testInstance.IsPositive)
-	chain.AddBlock(Perso)
+	Person := blockchainknn.AddPerson(testInstance.Name, testInstance.Department, testInstance.LifeStage, testInstance.Gender, testInstance.Comorbidity, testInstance.Symptomatology, testInstance.IsPositive)
+	chain.AddBlock(Person)
 	addedPersons = append(addedPersons, testInstance)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(predictions)
@@ -174,7 +174,7 @@ func calculateKNN(persons []Person, testInstances []Person, k int) []string {
 //GlobalVariables
 var persons []Person
 var addedPersons []Person
-var chain = blockchain.InitBlockChain()
+var chain = blockchainknn.InitBlockChain()
 
 func main() {
 	csvFile, err := os.Open("persons.csv")
