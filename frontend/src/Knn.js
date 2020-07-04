@@ -4,7 +4,7 @@ import React, { Component } from "react";
 function SelectOptions(props){
     const items = props.items;
     const optionList = items.map(x => 
-        <option key={x.value.toString() + x.name} value={x.value}>{x.name}</option>
+        <option key={x.value + x.name} value={x.value}>{x.name}</option>
     );
     return optionList;
 };
@@ -13,7 +13,7 @@ class PostForm extends Component {
 	constructor(props) {
         super(props);
 		this.state = {
-			Name: '',
+			Name: "",
 			Department: 0.0000000,
             LifeStage: 0.0000000,
             Gender:0.0000000,
@@ -43,12 +43,12 @@ class PostForm extends Component {
             comorbidity: this.state.Comorbidity,
             symptomatology: this.state.Symptomatology
         };
-		fetch('http://localhost:3000/knn', {
-            method: 'post',
+		fetch('http://localhost:4000/knn', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({payload})
+            body: JSON.stringify({name:this.state.Name,department:parseFloat(this.state.Department),lifestage:parseFloat(this.state.LifeStage),gender:parseFloat(this.state.Gender),comorbidity:parseFloat(this.state.Comorbidity),symptomatology:parseFloat(this.state.Symptomatology)})
         })
         .then(res=>res.json())
         .then(res => {
@@ -59,6 +59,10 @@ class PostForm extends Component {
 
 	render() {
         const departments = [
+            {
+                value:0.000,
+                name:"Seleccione"
+            },
             {
                 value: 0.0650,
                 name: "Ica"
@@ -162,6 +166,10 @@ class PostForm extends Component {
         ];
         const lifeStages = [
             {
+                value:0.0000,
+                name:"Seleccione"
+            },
+            {
                 value:0.6042,
                 name: "Adulto"
             },
@@ -186,6 +194,10 @@ class PostForm extends Component {
         ];
         const genders = [
             {
+                value:0.00000,
+                name:"Seleccione"           
+            },
+            {
                 value: 0.6020,
                 name:"Masculino"
             },
@@ -195,6 +207,10 @@ class PostForm extends Component {
             }
         ];
         const comorbidities = [
+            {
+                value:0.00000,
+                name: "Seleccione"
+            },
             {
                 value: 0.3010,
                 name:"Presion Arterial Alta"
@@ -230,6 +246,10 @@ class PostForm extends Component {
             }
         ];
         const symptomatologies = [
+            {
+                value:0.0000,
+                name:"Seleccione"
+            },
             {
                 value: 0.1806,
                 name: "Tos"

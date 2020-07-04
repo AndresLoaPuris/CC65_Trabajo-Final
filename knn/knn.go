@@ -133,8 +133,6 @@ func getNeighbors(trainingSet []Person, testInstance Person, k int) []Person {
 }
 
 func receivePerson(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Request-Method", "POST")
 	var testInstance Person
 	var testInstances []Person
 	var predictions []string
@@ -211,13 +209,13 @@ func main() {
 		})
 	}
 	router := mux.NewRouter().StrictSlash(true)
-	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	headers := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Accept", "Authorization", "X-Http-Method-Override"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
-	origins := handlers.AllowedOrigins([]string{"*"})
+	origins := handlers.AllowedOrigins([]string{"*", "http://localhost:3000/"})
 	router.HandleFunc("/", indexRoute)
 	router.HandleFunc("/knn", receivePerson).Methods("POST")
 	router.HandleFunc("/persons", getPeople).Methods("GET")
-	log.Fatal(http.ListenAndServe(":3000", handlers.CORS(headers, methods, origins)(router)))
+	log.Fatal(http.ListenAndServe(":4000", handlers.CORS(headers, methods, origins)(router)))
 	/*personsJSON, _ := json.Marshal(persons)
 	fmt.Println(string(personsJSON))*/
 
